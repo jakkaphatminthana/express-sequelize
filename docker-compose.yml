@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  express:
+    container_name: express_seq
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - '${PORT}:${PORT}' #"3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app # Mount current directory into container for live code updates (hot-reload)
+      - /app/node_modules # Prevent overwriting container's node_modules with host's to avoid conflicts
+    command: pnpm dev
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    container_name: express_seq_pg
+    # restart: always
+    # environment:
+    #   POSTGRES_USER: postgres
+    #   POSTGRES_PASSWORD: postgres
+    #   POSTGRES_DB: postgres
+    ports:
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}' #"6432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
