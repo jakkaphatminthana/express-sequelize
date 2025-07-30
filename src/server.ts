@@ -1,11 +1,14 @@
 import app from '@/app';
 import config from '@/config';
 
+import sequelize from '@/lib/sequelize';
+
 (async () => {
   try {
     app.listen(config.PORT, () => {
       console.log(`✅ Server running on port: ${config.PORT}`);
     });
+    await sequelize.sync();
   } catch (error) {
     console.error('💥 Failed to start the server', error);
     if (config.NODE_ENV === 'production') {
